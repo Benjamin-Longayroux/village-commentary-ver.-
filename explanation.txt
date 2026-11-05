@@ -1,0 +1,272 @@
+Explanation
+
+A breakdown of 
+    - All functions' purposes and how to edit them.
+    - All files.
+
+
+Across all / most functions: 
+    x1: bottom left corner of village X value
+        int x1 = loc_x - village_size / 2;
+    z1: bottom left corner of village Z value
+        int z1 = loc_z - village_size / 2;
+    x2: top right corner of village X value
+        int x2 = loc_x + village_size / 2;
+    z2: top right corner of village Z value
+        int z2 = loc_z + village_size / 2;
+    
+    These variables are used to keep spawned blocks, pathfinding 
+        and waypoint checks within village bounds. 
+        must be >= x1 && >= z2 && <= x2 && <= z2.
+
+    path_map:  an array a C-style array of bool values.
+                true if the block is NOT valid for paths/ waypoints
+                false if the block is valid for paths/ waypoints
+                to index this array:
+                    path_map[ (reletive_x_value) * z_width + (reletive_z_value) ]
+                where relative x/z values are is the coordinate within the village. 
+                e.g.
+                    origin is (0,0) and bottom right is (100,100) in a village size 100.
+                
+
+    surface_y:  The y-level of the ground. 
+
+    cs_plots:   (C-style_plots) is an array of the Plots which is then iterated through.
+                    Blocks taken by plots are avoided.
+                    This had to be a C-style bc i wasnt allowed to use vectors. 
+                    Its converted from the plots vector on main. 
+
+
+
+====    ====    ====
+Classes: 
+    Node, BfsQueue, homemade
+
+    
+
+
+    Node            tb_bfs_node.h
+
+    This class is used for BFS alg, 
+        these nodes are the units used for pathfinding.
+
+    Attributes:
+        stores relative x/y values,
+        stores parent node,
+            This is so the found path can be backtracked
+        stores the successor, 
+            This is used by BfsQueue to upkeep the linked list. 
+
+            
+
+    Functions:
+        None
+
+        
+    BfsQueue          tb_bfs_queue.h
+
+    This class is used for the BFS alg,
+        the queue is essentially a linked list.
+        I think there is an existing library but wastn allowed to use it. 
+
+    Attributes:
+        stores the pointer to the head Node (headN),
+            This is the node first in line -- next to be considered. 
+        stores the pointer to the rear Node (rearN)
+            This is the node last in line -- most recently added
+        stores the length of the queue (size).
+        
+    Functions: 
+        
+        isEmpty()
+            Returns a bool of whether the queue is empty.
+                When the queue is empty, then there are no Nodes
+                left to be considered.
+        
+        push(Node* newN) -- (newN --> new Node)
+            Void function that adds a new Node to the back of the queue
+        
+        pop()
+            Returns the Node at the front of the queue, 
+                Then removes it. 
+            It returns the first node because it is its turn to be considered
+                It removes it as it no longer needs to be in line.
+
+
+    Homemade        tb_homemade .cpp / .h
+        
+        Custom class that essentially works as a vector for coords 
+            Is obsalete and not used in the code, but I did not know how to
+            and was scared to delete the files 
+        
+        It was used to keep track of path coords for avoidance, 
+            which is why it is not used, as intersections are allowed
+            if you wanna remove intersection you probs better off just using vectors
+        
+
+
+
+====    ====    ====
+tb_bfs_alg .cpp / .h
+
+
+
+    bool* path_viability_check(int x1, int z1, int x2, int z2, const int surface_y);
+        
+        This function returns a bool array of all blocks within the village bounds
+            true if the block is NOT valid for paths/ waypoints
+            false if the block is valid for paths/ waypoints
+        
+        It checks if each block is (grass OR dirt) AND has air above it,
+            meaning no obstacles obstruct the path.
+
+        This C-style array becomes path_map.
+
+
+
+    void bfs_path(  int x1, int z1, int x2, int z2, int xS,
+                    int zS, int xT, int zT, Plot *cs_plots, int plot_amount,
+                    bool* path_map, mcpp::BlockType block, const int surface_y)
+
+        This function generates the path between two points.
+            it features the BFS algorithm, block spawning 
+            and removal of obstacle / plots from consideration.
+        
+        Arguments: 
+
+            x1, z1, x2, z2 as described. 
+
+            xS and zS are the coordinates which the path generation starts from.
+                These are local coordinates.
+                xS --> x Start && zS --> z Start
+            
+            xT and zT are the coordinates which the path generation is trying to reach. 
+                These are local coordinates.
+                xT --> x Target && zT --> z Target
+            
+            cs_plots is as described
+
+            plot_amount is the length of cs_plots. 
+                Used for iteration.
+
+            path_map is as described. 
+
+            block is just the block used to generate the path.
+                pass any mcpp::Blocks::"..." as an argument. 
+
+            surface_y is as described.
+        
+        Functionality: 
+
+            Begins by iterating through all the plots, 
+                marking occupied blocks as visited. 
+                Visited blocks are unable to be considered in the alg. 
+            This includes the two block buffer,
+                but then undoes it for the two blocks infront of the door. 
+
+
+            It then makes sure that blocks surrounding xS, zS, xT, zT are all unvisited. 
+                This is to ensure that generation is possible. 
+                This is mostly for definite insurance 
+                    and was mostly from when path intersection was disallowed. 
+
+            Standard BFS alg now begins, 
+                expands in all directions from the Node first in the queue, 
+                all neighbours valid for paths are then added to the back of the queue
+                    (valid for paths if not visited && not an obstacle)
+                This repeats until there are no valid Nodes or the target is found
+
+            If a path is found, 
+                it then runs from the target Node to its parent node,
+                then to the parent's parent node, and on and on until it reaches the start of the path.
+                All of these nodes are added to an array. 
+
+                The created array of nodes is then iterated through in reverse to place blocks
+
+                NOTE:   this seems in effective, the paths were stored in an array for 
+                        path intersection avoidance. But since this was removed, the 
+                        blocks can be placed while the Node's parents are iterated through,
+                        without array storage. 
+
+            Then all created objects are deleted.
+        
+
+        
+
+tb_house_grouping .cpp / .h
+
+    void quickSortPlots(Plot *cs_plots, int low, int high)
+
+        This function is a quick sort algorithm 
+            it sorts a C-style array of plots based on their proximity
+            to the bottom left corner (the lowest x / z coords)
+        This function can be replaced with any sorting method so long as it 
+            reorganises cs_plots,
+            or the code can be entirely refactored
+
+        Arguments:
+
+            low is the lowest index to be considered
+            high is the highest index to be considered
+                these have to be passed so that the recursivity works 
+        
+        Functionality: 
+            Standard quicksort
+
+            Makes sure the lowest index is lower than the highest
+            
+            Moves all Plots further than the last in the array to the end of the array
+
+            It then repeats this process for all Plots on the left of the pivot 
+                (closer to the corner than the pivot)
+
+            It then repeats this process for all Plots on the right of the pivot
+                (further from the corner)
+
+            This is all repeated until the array is sorted
+
+            Terrible explanation, but is a standard quicksort if you wanna use a more reliable source
+
+    bool isWaypointInsidePlot(int wx, int wz, const Plot &plot)
+
+        This function is called for every created plot
+            it checks of the waypoint exists within the plot currently being checked
+
+
+        Arguments:
+
+            wx is the proposed waypoint X value
+            wz is the proposed waypoint Z value
+            plot is the plot currently being checked
+
+        Functionality: 
+            gets the bounds of the plot being checked
+
+            checks is wx or wz is within the bounds of the plot
+            
+            returns whether its inside or not
+
+    static bool waypointFits(int x, int z, int x1, int z1, int x2, int z2,
+                            const bool *path_map, const Plot *plots, 
+                            int plot_amount)
+
+        This function handles waypoint coord checking, 
+            calling all of the checking all of the conditions:
+                - inbounds - not on an obstacle - not inside a plot
+
+        
+        Arguments:
+            x waypoint
+
+
+
+        
+
+
+        
+        
+
+
+
+
+
