@@ -1,5 +1,8 @@
 Explanation
 
+====    ====    ====
+INTRO 
+
 A breakdown of 
     - All functions' purposes and how to edit them.
     - All files.
@@ -24,6 +27,8 @@ Did not document main on this document.
 ====    ====    ====
 
 GLOSSARY:
+    
+    -   Intro
 
     -   Glossary
 
