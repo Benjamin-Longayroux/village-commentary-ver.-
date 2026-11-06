@@ -40,7 +40,7 @@ Across all / most functions:
 
 ====    ====    ====
 Classes: 
-    Node, BfsQueue, homemade
+    Node, BfsQueue, waypoints, homemade
 
     
 
@@ -52,8 +52,10 @@ Classes:
 
     Attributes:
         stores relative x/y values,
+        
         stores parent node,
             This is so the found path can be backtracked
+        
         stores the successor, 
             This is used by BfsQueue to upkeep the linked list. 
 
@@ -72,8 +74,10 @@ Classes:
     Attributes:
         stores the pointer to the head Node (headN),
             This is the node first in line -- next to be considered. 
+        
         stores the pointer to the rear Node (rearN)
             This is the node last in line -- most recently added
+        
         stores the length of the queue (size).
         
     Functions: 
@@ -91,6 +95,36 @@ Classes:
                 Then removes it. 
             It returns the first node because it is its turn to be considered
                 It removes it as it no longer needs to be in line.
+
+    waypoints       tb_waypoint.h
+
+    This class is used to store details needed for the waypoints 
+    
+    Attributes:
+        
+        stores the x, z coordinates 
+            which is where the waypoint exists at / will be built at
+        
+        stores the waypoint's children in a vector of plots ptrs
+            This stores all of the plots which the waypoint needa connect to 
+        
+        stores whether it is linked
+            This is used for the waypoint pairings later
+            It ensures no circular paths are made and every waypoint
+                becomes connect to a waypoint which can connect to all other waypoints;
+                no isolated groups will be made
+        
+        stores the waypoint's distance from the centre (dist)
+            This is used to connect waypoints closest together
+                (like how it works with plots)
+    
+    Functions:
+
+        print()
+            Void function that prints the waypoint info in debug mode
+                prints x,z coords, and the children
+
+
 
 
     Homemade        tb_homemade .cpp / .h
@@ -256,15 +290,208 @@ tb_house_grouping .cpp / .h
 
         
         Arguments:
-            x waypoint
+            x is the waypoint's x value
+            z is the waypoint's z value
+
+            x1, z1, x2, z2 as described
+
+            path_map, cs_plots, plot_amount are all as described
+
+        
+        Functionality: 
+            Checks if the waypoint is out of village bounds
+                sets false if it is out of bounds
+
+            Then checks that its on top of an obstacle
+                sets false if it is on an obstacle
+
+            Then it checks every plot bounds
+                sets false if there is a plot that it is inside of
 
 
+
+    std::vector<Waypoint> group_plots(Plot *cs_plots, int plot_amount, int x1, int z1,
+                                  int x2, int z2, const bool *path_map, 
+                                  const int surface_y)
+
+        Returns a vector of generated waypoint objects
+            taking groups of 3 (to 5) consectutive plots from the plots array,
+            the plots can be consectutive as they are sorted based on proximity
+        For all of the waypoints generated, its houses it needs to connect to 
+            is added to the children vector
+        It then picks a location for the waypoints
+            then moves it around until it finds a valid spot
+        
+        Arguments:
+            cs_plots, plot_amount as described
+
+            x1, z1, x2, z2 as described
+
+            path_map, surface_y as described
+
+        
+        Functionality:
+            Creates the empty vector of waypoints
+
+            for each plot, it calculates its distance from the bottom left corner
+                Then quick sorts them based on their distances,
+                this means the vector of plots is ordered based approximately on how
+                    close together they are
+
+            Then calculates how many houses the waypoint needs to take as children,
+                this is because the waypoints should have plots in groups of 3,
+                    but this is not possible if the amount of plots is not divisble by 3,
+                    8 plots should have a group of 3, and a group of 5
+                    7 plots should have a group of 3, and a group of 4
+                This amount of houses is then allocated to that waypoint
+            
+            For each waypoint, 
+                the average x and z values of all the children is calculated
+                Thus putting the waypoint in the centre of the group'
+
+                Then the x and z is moved around until a valid location is reached
+
+                Then the emeraled is placed
+
+            Then return the vector of all waypoints created
+
+
+    void connectHouses(int x1, int z1, int x2, int z2, Waypoint wp, bool *path_map, 
+                    Plot *cs_plots, int plot_amount, mcpp::BlockType block, 
+                    bool debug, const int surface_y)
+        
+        Void function that essentially just calls BFS paths
+            but it is specialised for connecting waypoints to children    
+        
+        The original use for this function was so that paths generated would only be
+            temporarily stored, rather than being avodied so that 
+            houses of the same waypoint can share paths 
+            However this is moot as path intersections are entirely allowed
+
+        This function could be improved by passing the vector of children then looping through that,
+            This would remove the need for the function to be needed to called in a looping
+            But I didnt do this to prevent path intersections in a way i could understand
+
+        arguments: 
+            x1, z1, x2, z2 are as described
+
+            wp is the waypoint currently being connected to its children
+
+            path_map, cs_plots, plot_amount, block is as described
+        
+            debug is a bool indicating whether the code is in debug mode
+
+            surface_y is as described
+
+        Functionality: 
+
+            If the waypoint has children
+                it loops through the vector of the waypoints children 
+
+            The coordinate of the block infront of the door is then found, 
+                as this is the coord the path is connecting to 
+
+            Then the bfs path generation is ran 
+
+tb_waypoint_gen .cpp / .h
+
+void quickSortWaypoints(std::vector<Waypoint>& waypoints, int low, int high) {
+        
+    Void function that is a quicksory algorithm,
+        that orders the vector of waypoints 
+        based on each waypoint's distance from the village centre
+    
+    To change this algorithm, it just must change the 
+        waypoints vector that is passed by reference 
+        Do so however youd like 
+
+    Arguments:
+
+        waypoints is a vector of waypoints passed by address,
+            it is reorganised in place for consideration
+
+        Low is the lowest index to begin the sort at
+
+        high is the highest index to which the sort should go
+
+
+            
+    Functionality:
+
+        Quicksort algorithm that works the exact same as the plot one
+            (quickSortPlots())
+        Except .dist is the distance of the waypoint to the centre
+
+
+void connectWaypoints(int x1, int z1, int x2, int z2, 
+                      std::vector<Waypoint>& waypoints, bool* path_map, 
+                      Plot* cs_plots, int plot_amount, mcpp::BlockType block, 
+                      bool debug, const int surface_y) 
+    
+    Void function that spawns the paths between all of the waypoints,
+        it pairs them up based on proximity,
+        connecting one waypoint to the closest non connected waypoint
+
+    Arguments:
+        x1, z1, x2, z2 are as described
+
+        waypoints is the vector of waypooints generated in group_plots(...)
+
+        path_map, cs_plots, plot_amount, block is as described
+
+        debug is the bool value indicating whether the code is running in debug mode
+
+        surface_y is as described
+
+    Functionality:
+
+        Uses the quicksort to order the waypoints as described
+
+        Iterates through all the waypoints to connect it 
+            to the next closest one unlinked one
+
+        The path is spawned between the two
+        
+        The waypoint currently iterated to is marked as linked, 
+            but the waypoint which is found is not marked as linked
+            this is so that multiple waypoints may connect to this waypoint
+                which would be rlly difficult to do if it was marked as linked
+
+        This also means all waypoints connect to a waypoint which it is not currently linked to 
+            preventing cycles from forming 
 
         
 
+void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
+                    const int surface_y) 
+    
+    Void function that spawns the waypoint structure at each waypoint
+        minus the emerald block
 
+    to change the structure, put wtv you want within the iterative loop 
+
+    Arguments:
+
+        waypoints, surface_y are as described
+
+    Functionality:
+
+        Loops through all of the waypoints in the vector 
+            spwans the SPRUCE_WOOD_PLANK plank in the 8 neighbouring blocks
         
+            Then spawns the REDSTONE_LAMP_ACTIVE and REDSTONE_BLOCK in the center,
+                the centre is the actual coordinate of the waypoint
         
+            then moves on to the next waypoint
+
+
+
+
+            
+
+
+            
+            
 
 
 

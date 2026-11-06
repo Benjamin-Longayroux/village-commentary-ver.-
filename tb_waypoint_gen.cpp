@@ -92,26 +92,42 @@ void connectWaypoints(int x1, int z1, int x2, int z2,
 void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
                        const int surface_y) 
 {
+    // Void function that places all of the waypoint structure except the emerald block
+    //      Loops through to do this at all waypoints
+
     mcpp::MinecraftConnection mc;
 
     int wp_index = 0;
     int total_waypoints = static_cast<int>(waypoints.size());
     while (wp_index < total_waypoints) {
+    //  Standard loop to go through all of the waypoints in vector
+
         const Waypoint& wp = waypoints[wp_index];
+    //  Get the current waypoint 
+
         int x_offset = -1;
         while (x_offset <= 1) {
             int z_offset = -1;
             while (z_offset <= 1) {
+    //  Create two loops to expand in the x/z direction from the waypoint
+    //      This is to spawn the spruce blocks on all neighbouring blocks
+
+
                 mcpp::Coordinate wp_coord(wp.x + x_offset, surface_y, 
                                           wp.z + z_offset);
+    //  Define the coordinate for the current spruceblock to be placed
 
                 profiled_mcpp("mcpp_set_block", [&]() { 
                     return mc.setBlock(wp_coord, 
                                        mcpp::Blocks::SPRUCE_WOOD_PLANK); 
                 });
+    // Place the spruce block
+
                 z_offset++;
+    //  Move in the z direction
             }
             x_offset++;
+    //  Move in the x direction
         }
         
         mcpp::Coordinate center_coord(wp.x, surface_y, wp.z);
@@ -119,14 +135,18 @@ void waypointPlatforms(const std::vector<Waypoint>& waypoints,
             return mc.setBlock(center_coord, 
                                mcpp::Blocks::REDSTONE_LAMP_ACTIVE); 
         });
+    //  Place the redstone lamp in the centre,
+    //      This is the exact coord of the waypoint 
         
         mcpp::Coordinate redstone_coord(wp.x, surface_y - 1, wp.z);
         profiled_mcpp("mcpp_set_block", [&]() { 
             return mc.setBlock(redstone_coord, 
                                mcpp::Blocks::REDSTONE_BLOCK); 
         });
+    //  Place the redstone block under the lamp to power it
 
         wp_index++;
+    //  Move to the next waypoint
     }
 
     return;
