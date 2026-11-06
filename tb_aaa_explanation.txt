@@ -81,6 +81,7 @@ UNIVERSAL ARGUMENTS
         These variables are used to keep spawned blocks, pathfinding 
             and waypoint checks within village bounds. 
             must be >= x1 && >= z2 && <= x2 && <= z2.
+        
 
         path_map:  an array a C-style array of bool values.
                     true if the block is NOT valid for paths/ waypoints
@@ -131,7 +132,7 @@ CLASSES:
 
         
 
-
+    -=-=-=-=-=-=
 
     BfsQueue          tb_bfs_queue.h
 
@@ -166,7 +167,7 @@ CLASSES:
 
 
 
-
+    -=-=-=-=-=-=
 
     waypoints       tb_waypoint.h
 
@@ -198,7 +199,7 @@ CLASSES:
 
 
 
-
+    -=-=-=-=-=-=
 
     Homemade        tb_homemade .cpp / .h
         
@@ -253,7 +254,7 @@ tb_bfs_alg .cpp / .h
                 as there is an obstacle here
 
 
-
+    -=-=-=-=-=-=
 
     void bfs_path(  int x1, int z1, int x2, int z2, int xS,
                     int zS, int xT, int zT, Plot *cs_plots, int plot_amount,
@@ -321,11 +322,10 @@ tb_bfs_alg .cpp / .h
 
             Then all created objects are deleted.
         
-
-        
+-=-=-=-=-=-=
+____________
 
 tb_house_grouping .cpp / .h
-
 
 
 
@@ -362,6 +362,8 @@ tb_house_grouping .cpp / .h
 
             Terrible explanation, but is a standard quicksort if you wanna use a more reliable source
 
+    -=-=-=-=-=-=
+
     bool isWaypointInsidePlot(int wx, int wz, const Plot &plot)
 
         This function is called for every created plot
@@ -380,6 +382,10 @@ tb_house_grouping .cpp / .h
             checks is wx or wz is within the bounds of the plot
             
             returns whether its inside or not
+
+
+    -=-=-=-=-=-=
+
 
     static bool waypointFits(int x, int z, int x1, int z1, int x2, int z2,
                             const bool *path_map, const Plot *plots, 
@@ -409,11 +415,7 @@ tb_house_grouping .cpp / .h
             Then it checks every plot bounds
                 sets false if there is a plot that it is inside of
 
-
-
-
-
-
+    -=-=-=-=-=-=
 
     std::vector<Waypoint> group_plots(Plot *cs_plots, int plot_amount, int x1, int z1,
                                   int x2, int z2, const bool *path_map, 
@@ -460,9 +462,7 @@ tb_house_grouping .cpp / .h
 
             Then return the vector of all waypoints created
 
-
-
-
+    -=-=-=-=-=-=
 
     void connectHouses(int x1, int z1, int x2, int z2, Waypoint wp, bool *path_map, 
                     Plot *cs_plots, int plot_amount, mcpp::BlockType block, 
@@ -501,6 +501,9 @@ tb_house_grouping .cpp / .h
 
             Then the bfs path generation is ran 
 
+-=-=-=-=-=-=
+____________
+
 tb_waypoint_gen .cpp / .h
 
 
@@ -533,9 +536,7 @@ tb_waypoint_gen .cpp / .h
                 (quickSortPlots())
             Except .dist is the distance of the waypoint to the centre
 
-
-
-
+    -=-=-=-=-=-=
 
     void connectWaypoints(int x1, int z1, int x2, int z2, 
                         std::vector<Waypoint>& waypoints, bool* path_map, 
@@ -574,9 +575,7 @@ tb_waypoint_gen .cpp / .h
             This also means all waypoints connect to a waypoint which it is not currently linked to 
                 preventing cycles from forming 
 
-            
-
-
+    -=-=-=-=-=-=
 
     void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
                         const int surface_y) 
@@ -603,10 +602,9 @@ tb_waypoint_gen .cpp / .h
 
 
 ====    ====    ====
+
 THINGS YOU MAY WANNA CHANGE 
     and how to do it
-
-
 
 
     OBSTACLE DETECTION
@@ -618,9 +616,7 @@ THINGS YOU MAY WANNA CHANGE
         To add more obstacles
             set the index in the array to true when the new obstacle condition is met
 
-
-
-
+    -=-=-=-=-=-=
         
     PATHFINDING ALGORITHM
 
@@ -634,8 +630,7 @@ THINGS YOU MAY WANNA CHANGE
             I would reccomended setting the blocks of wtv you tryna avoid
             to be visited 
 
-
-
+    -=-=-=-=-=-=
 
     PLOT GROUPINGS
 
@@ -653,9 +648,8 @@ THINGS YOU MAY WANNA CHANGE
 
             This would take place on the loop found starting at line 196
             And line 185 (quickSortPlots(...)) would no longer be needed
-    
 
-
+    -=-=-=-=-=-=
 
     WAYPOINT RELOCATIONS
 
@@ -670,8 +664,7 @@ THINGS YOU MAY WANNA CHANGE
                 the waypoint's x attribute and z attribute
                 gets finalised at a valid location
 
-
-
+    -=-=-=-=-=-=
 
     WAYPOINT GROUPINGS
         
@@ -683,9 +676,7 @@ THINGS YOU MAY WANNA CHANGE
             in such a way that consectutive waypoints can be ideal for joining
                 this is how quickSortWaypoints(...) works
     
-
-
-
+    -=-=-=-=-=-=
 
     WAYPOINT STRUCTURE
 
