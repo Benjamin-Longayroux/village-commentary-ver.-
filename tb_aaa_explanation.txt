@@ -10,8 +10,12 @@ Did not document main on this document.
 With this document, and the explainations added to main, 
     it should be understandable
 
+.H files are not documented, 
+    as they arent anything special and are explained 
+    through the .cpp documenation and this document
 
-Across all / most functions: 
+
+Across all / most functions, the arguments: 
     x1: bottom left corner of village X value
         int x1 = loc_x - village_size / 2;
     z1: bottom left corner of village Z value
@@ -71,6 +75,9 @@ Classes:
         None
 
         
+
+
+        
     BfsQueue          tb_bfs_queue.h
 
     This class is used for the BFS alg,
@@ -101,6 +108,9 @@ Classes:
                 Then removes it. 
             It returns the first node because it is its turn to be considered
                 It removes it as it no longer needs to be in line.
+
+
+
 
     waypoints       tb_waypoint.h
 
