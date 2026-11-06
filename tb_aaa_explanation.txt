@@ -68,36 +68,36 @@ GLOSSARY:
 ====    ====    ====
 UNIVERSAL ARGUMENTS
 
-Across all / most functions, the arguments: 
-    x1: bottom left corner of village X value
-        int x1 = loc_x - village_size / 2;
-    z1: bottom left corner of village Z value
-        int z1 = loc_z - village_size / 2;
-    x2: top right corner of village X value
-        int x2 = loc_x + village_size / 2;
-    z2: top right corner of village Z value
-        int z2 = loc_z + village_size / 2;
-    
-    These variables are used to keep spawned blocks, pathfinding 
-        and waypoint checks within village bounds. 
-        must be >= x1 && >= z2 && <= x2 && <= z2.
+    Across all / most functions, the arguments: 
+        x1: bottom left corner of village X value
+            int x1 = loc_x - village_size / 2;
+        z1: bottom left corner of village Z value
+            int z1 = loc_z - village_size / 2;
+        x2: top right corner of village X value
+            int x2 = loc_x + village_size / 2;
+        z2: top right corner of village Z value
+            int z2 = loc_z + village_size / 2;
+        
+        These variables are used to keep spawned blocks, pathfinding 
+            and waypoint checks within village bounds. 
+            must be >= x1 && >= z2 && <= x2 && <= z2.
 
-    path_map:  an array a C-style array of bool values.
-                true if the block is NOT valid for paths/ waypoints
-                false if the block is valid for paths/ waypoints
-                to index this array:
-                    path_map[ (reletive_x_value) * z_width + (reletive_z_value) ]
-                where relative x/z values are is the coordinate within the village. 
-                e.g.
-                    origin is (0,0) and bottom right is (100,100) in a village size 100.
-                
+        path_map:  an array a C-style array of bool values.
+                    true if the block is NOT valid for paths/ waypoints
+                    false if the block is valid for paths/ waypoints
+                    to index this array:
+                        path_map[ (reletive_x_value) * z_width + (reletive_z_value) ]
+                    where relative x/z values are is the coordinate within the village. 
+                    e.g.
+                        origin is (0,0) and bottom right is (100,100) in a village size 100.
+                    
 
-    surface_y:  The y-level of the ground. 
+        surface_y:  The y-level of the ground. 
 
-    cs_plots:   (C-style_plots) is an array of the Plots which is then iterated through.
-                    Blocks taken by plots are avoided.
-                    This had to be a C-style bc i wasnt allowed to use vectors. 
-                    Its converted from the plots vector on main. 
+        cs_plots:   (C-style_plots) is an array of the Plots which is then iterated through.
+                        Blocks taken by plots are avoided.
+                        This had to be a C-style bc i wasnt allowed to use vectors. 
+                        Its converted from the plots vector on main. 
 
 
 
@@ -137,7 +137,7 @@ CLASSES:
 
     This class is used for the BFS alg,
         the queue is essentially a linked list.
-        I think there is an existing library but wastn allowed to use it. 
+        I think there is an existing queue library but wastn allowed to use it. 
 
     Attributes:
         stores the pointer to the head Node (headN),
@@ -234,7 +234,23 @@ tb_bfs_alg .cpp / .h
 
         This C-style array becomes path_map.
 
+        Arguments:
+            x1, z1, x2, z2 are as described
+            surface_y is as described
 
+        Functionality:
+            returns a bool array of whether the block is valid for a path
+            
+            this returns the path_map array that is described previously
+
+            Checks through every x / z coordinate for
+                if the ground block is grass or dirt
+                AND 
+                if the block above is air
+
+            If either is not true, this is considered an obstacle
+                and the index is marked as true
+                as there is an obstacle here
 
 
 
