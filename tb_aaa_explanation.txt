@@ -4,6 +4,12 @@ A breakdown of
     - All functions' purposes and how to edit them.
     - All files.
 
+Did not document main on this document. 
+    Documentation is added but it is just calling like 5 functions explained however
+
+With this document, and the explainations added to main, 
+    it should be understandable
+
 
 Across all / most functions: 
     x1: bottom left corner of village X value
@@ -569,7 +575,7 @@ THINGS YOU MAY WANNA CHANGE
                 line 360 of (tb_house_grouping.cpp)
 
     
-    
+
 
 
     

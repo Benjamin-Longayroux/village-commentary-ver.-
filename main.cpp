@@ -327,14 +327,20 @@ int main(const int argc, const char *const *const argv)
 
                     bool* path_map = path_viability_check(
                         x1, z1, x2, z2, surface_y);
+    //  Create the obstacles array
+
                     int plot_amount = plots.size();
                     Plot* cs_plots = plots.data();
+    //  Obtain the plot_amount and turn the plots vector into a c-style
+
                     std::vector<Waypoint> waypoints;
+    //  Intialise waypoints to be filled
                     {
                         PerformanceStage timing("group_plots");
                         waypoints = group_plots(
                             cs_plots, plot_amount, x1, z1, x2, z2,
                             path_map, surface_y);
+    //  Create all the waypoints, filling the waypoints vector
                     }
                     if (waypoints.empty()) {
                         delete[] path_map;
@@ -352,6 +358,7 @@ int main(const int argc, const char *const *const argv)
                         PerformanceStage timing("connect_houses");
                         for (Waypoint wp : waypoints)
                         {
+    //  For all of the waypoints, connect each waypoint to all its children
                             if (debug) {
                                 wp.print();
                             }
@@ -360,6 +367,8 @@ int main(const int argc, const char *const *const argv)
                                 cs_plots, plot_amount,
                                 mcpp::Blocks::GRASS_PATH, debug, surface_y);
                         }
+    //  Spawn the paths from the current waypoint to all its children
+
                     }
                     progress_log("5/6 Connecting waypoints...");
                     {
@@ -368,11 +377,14 @@ int main(const int argc, const char *const *const argv)
                             x1, z1, x2, z2, waypoints, path_map,
                             cs_plots, plot_amount,
                             mcpp::Blocks::COBBLESTONE, debug, surface_y);
+    //  Connect all of the waypoints together
+
                     }
                     progress_log("6/6 Building waypoint markers...");
                     {
                         PerformanceStage timing("waypoint_platforms");
                         waypointPlatforms(waypoints, surface_y);
+    //  Spawn all of the waypoint structures
                     }
 
                     delete[] path_map;
