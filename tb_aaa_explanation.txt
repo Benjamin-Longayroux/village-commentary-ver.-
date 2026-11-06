@@ -3,6 +3,9 @@ Explanation
 A breakdown of 
     - All functions' purposes and how to edit them.
     - All files.
+    - How to change things you may wanna change
+
+
 
 Did not document main on this document. 
     Documentation is added but it is just calling like 5 functions explained however
@@ -14,6 +17,48 @@ With this document, and the explainations added to main,
     as they arent anything special and are explained 
     through the .cpp documenation and this document
 
+
+====    ====    ====
+
+GLOSSARY:
+
+    -   Glossary
+
+    -   Universal Arguments
+
+    -   Classes
+        -   Node
+        -   BfsQueue
+        -   waypoints
+        -   homemade
+
+    -   File breakdowns
+        -   tb_bfs_alg.cpp
+                -   path_viability_check(...)
+                -   bfs_path(...)
+
+        -   tb_house_grouping.cpp
+                -   quickSortPlots(...)
+                -   isWaypointInsidePlot(...)
+                -   waypointFits(...)
+                -   group_plots(...)
+                -   connectHouses(...)
+
+        -   tb_waypoint_gen.cpp
+                -   quickSortWaypoints(...)
+                -   connectWaypoints(...)
+                -   waypointPlatforms(...)
+    
+    -   Things you may wanna change
+        -   obstacle detection
+        -   Pathfinding algorithm
+        -   plot groupings
+        -   waypoint relocation
+        -   waypoint grouping
+        -   waypoint structure
+
+====    ====    ====
+UNIVERSAL ARGUMENTS
 
 Across all / most functions, the arguments: 
     x1: bottom left corner of village X value
@@ -49,7 +94,9 @@ Across all / most functions, the arguments:
 
 
 ====    ====    ====
-Classes: 
+
+CLASSES: 
+
     Node, BfsQueue, waypoints, homemade
 
     
@@ -159,6 +206,9 @@ Classes:
 
 
 ====    ====    ====
+
+FILE BREAKDOWN
+
 tb_bfs_alg .cpp / .h
 
 
