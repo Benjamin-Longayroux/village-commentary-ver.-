@@ -395,98 +395,189 @@ tb_house_grouping .cpp / .h
 
 tb_waypoint_gen .cpp / .h
 
-void quickSortWaypoints(std::vector<Waypoint>& waypoints, int low, int high) {
+    void quickSortWaypoints(std::vector<Waypoint>& waypoints, int low, int high)
+            
+        Void function that is a quicksory algorithm,
+            that orders the vector of waypoints 
+            based on each waypoint's distance from the village centre
         
-    Void function that is a quicksory algorithm,
-        that orders the vector of waypoints 
-        based on each waypoint's distance from the village centre
-    
-    To change this algorithm, it just must change the 
-        waypoints vector that is passed by reference 
-        Do so however youd like 
+        To change this algorithm, it just must change the 
+            waypoints vector that is passed by reference 
+            Do so however youd like 
 
-    Arguments:
+        Arguments:
 
-        waypoints is a vector of waypoints passed by address,
-            it is reorganised in place for consideration
+            waypoints is a vector of waypoints passed by address,
+                it is reorganised in place for consideration
 
-        Low is the lowest index to begin the sort at
+            Low is the lowest index to begin the sort at
 
-        high is the highest index to which the sort should go
+            high is the highest index to which the sort should go
 
+
+                
+        Functionality:
+
+            Quicksort algorithm that works the exact same as the plot one
+                (quickSortPlots())
+            Except .dist is the distance of the waypoint to the centre
+
+
+    void connectWaypoints(int x1, int z1, int x2, int z2, 
+                        std::vector<Waypoint>& waypoints, bool* path_map, 
+                        Plot* cs_plots, int plot_amount, mcpp::BlockType block, 
+                        bool debug, const int surface_y) 
+        
+        Void function that spawns the paths between all of the waypoints,
+            it pairs them up based on proximity,
+            connecting one waypoint to the closest non connected waypoint
+
+        Arguments:
+            x1, z1, x2, z2 are as described
+
+            waypoints is the vector of waypooints generated in group_plots(...)
+
+            path_map, cs_plots, plot_amount, block is as described
+
+            debug is the bool value indicating whether the code is running in debug mode
+
+            surface_y is as described
+
+        Functionality:
+
+            Uses the quicksort to order the waypoints as described
+
+            Iterates through all the waypoints to connect it 
+                to the next closest one unlinked one
+
+            The path is spawned between the two
+            
+            The waypoint currently iterated to is marked as linked, 
+                but the waypoint which is found is not marked as linked
+                this is so that multiple waypoints may connect to this waypoint
+                    which would be rlly difficult to do if it was marked as linked
+
+            This also means all waypoints connect to a waypoint which it is not currently linked to 
+                preventing cycles from forming 
 
             
-    Functionality:
 
-        Quicksort algorithm that works the exact same as the plot one
-            (quickSortPlots())
-        Except .dist is the distance of the waypoint to the centre
+    void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
+                        const int surface_y) 
+        
+        Void function that spawns the waypoint structure at each waypoint
+            minus the emerald block
+
+        to change the structure, put wtv you want within the iterative loop 
+
+        Arguments:
+
+            waypoints, surface_y are as described
+
+        Functionality:
+
+            Loops through all of the waypoints in the vector 
+                spwans the SPRUCE_WOOD_PLANK plank in the 8 neighbouring blocks
+            
+                Then spawns the REDSTONE_LAMP_ACTIVE and REDSTONE_BLOCK in the center,
+                    the centre is the actual coordinate of the waypoint
+            
+                then moves on to the next waypoint
 
 
-void connectWaypoints(int x1, int z1, int x2, int z2, 
-                      std::vector<Waypoint>& waypoints, bool* path_map, 
-                      Plot* cs_plots, int plot_amount, mcpp::BlockType block, 
-                      bool debug, const int surface_y) 
+
+====    ====    ====
+THINGS YOU MAY WANNA CHANGE 
+    and how to do it
+
+    OBSTACLE DETECTION
+
+        Update path_viability_check(...) of (tb_bfs_alg.cpp) to set more indexes to true
+
+        setting an index to true means this coordinate is not viable for a path to spawn on
+
+        To add more obstacles
+            set the index in the array to true when the new obstacle condition is met
+
+        
+    PATHFINDING ALGORITHM
+
+        Update bfs_path(...) of (tb_bfs_alg.cpp) to spawn the blocks between
+            (xS, xZ) to (xT, zT) in wtv way you want
+            So long as the blocks are spawned 
+        
+        Can remove or add obstacle detection as wanted
+
+        To add more avoidance systems, 
+            I would reccomended setting the blocks of wtv you tryna avoid
+            to be visited 
+
+    PLOT GROUPINGS
+
+        Simplest way would be to update or replace 
+            quickSortPlots(...) of (tb_house_grouping.cpp) to reorder the cs_plots
+            so that consectutive plot elements are right for being grouped together
+
+            This keeps the grouping functionality which just groups plots neighbouring in the array
+
+        
+        OTHERWISE
+            Update group_plots(...) of (tb_house_grouping.cpp) 
+            to systemically create waypoint objects 
+                and fill each created waypoint's children vector with the plots of the group
+
+            This would take place on the loop found starting at line 196
+            And line 185 (quickSortPlots(...)) would no longer be needed
     
-    Void function that spawns the paths between all of the waypoints,
-        it pairs them up based on proximity,
-        connecting one waypoint to the closest non connected waypoint
+    WAYPOINT RELOCATIONS
 
-    Arguments:
-        x1, z1, x2, z2 are as described
-
-        waypoints is the vector of waypooints generated in group_plots(...)
-
-        path_map, cs_plots, plot_amount, block is as described
-
-        debug is the bool value indicating whether the code is running in debug mode
-
-        surface_y is as described
-
-    Functionality:
-
-        Uses the quicksort to order the waypoints as described
-
-        Iterates through all the waypoints to connect it 
-            to the next closest one unlinked one
-
-        The path is spawned between the two
+        Update waypointFits(...) of (tb_house_grouping.cpp),
+            to change conditions which are considered
         
-        The waypoint currently iterated to is marked as linked, 
-            but the waypoint which is found is not marked as linked
-            this is so that multiple waypoints may connect to this waypoint
-                which would be rlly difficult to do if it was marked as linked
+        AND 
+        update group_plots(...) of (tb_house_grouping.cpp),
+            from line 260 where the relocation code begins
+            
+            replace this with wtv such that 
+                the waypoint's x attribute and z attribute
+                gets finalised at a valid location
 
-        This also means all waypoints connect to a waypoint which it is not currently linked to 
-            preventing cycles from forming 
-
+    WAYPOINT GROUPINGS
         
+        Update connectWaypoints(...) of (tb_waypoint_gen)
+            in such a way that bfs_path(...) is still called 
+            to connect all waypoints to another waypoint
 
-void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
-                    const int surface_y) 
+        This can be done by reordering the waypoints vector
+            in such a way that consectutive waypoints can be ideal for joining
+                this is how quickSortWaypoints(...) works
     
-    Void function that spawns the waypoint structure at each waypoint
-        minus the emerald block
+    WAYPOINT STRUCTURE
 
-    to change the structure, put wtv you want within the iterative loop 
+        update connectWaypoints(...) of (tb_waypoint_gen.cpp)
+            in such a way that for every element of the vectors waypoints
+            a structure is built
 
-    Arguments:
-
-        waypoints, surface_y are as described
-
-    Functionality:
-
-        Loops through all of the waypoints in the vector 
-            spwans the SPRUCE_WOOD_PLANK plank in the 8 neighbouring blocks
+        CURRENTLY, 
+            this is done using a loop that runs through all of the waypoints
+            (line 102)
+            Then building the structure
         
-            Then spawns the REDSTONE_LAMP_ACTIVE and REDSTONE_BLOCK in the center,
-                the centre is the actual coordinate of the waypoint
-        
-            then moves on to the next waypoint
+        NOTE:
+            The emerald block is not spawned in this function, 
+            that is done in group_plots(...) 
+                line 360 of (tb_house_grouping.cpp)
+
+    
+    
+
+
+    
+            
 
 
 
-
+    
             
 
 
