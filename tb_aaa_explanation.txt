@@ -6,16 +6,19 @@ A breakdown of
     - How to change things you may wanna change
 
 
+All tb_ .cpp files are documented
+    .h files are not documented
+        as the arguments / functionality of the functions are explained
+        are explained in the respective .cpp file and this .txt
+    class .cpp files are not documented
+        as these are mostly explained in this document
 
 Did not document main on this document. 
-    Documentation is added but it is just calling like 5 functions explained however
+    Documentation is added to main.cpp 
+    but it is just calling like 5 functions explained 
 
-With this document, and the explainations added to main, 
-    it should be understandable
-
-.H files are not documented, 
-    as they arent anything special and are explained 
-    through the .cpp documenation and this document
+    But this document, and the explainations added to main, 
+        it should be understandable
 
 
 ====    ====    ====
