@@ -77,7 +77,7 @@ Classes:
         
 
 
-        
+
     BfsQueue          tb_bfs_queue.h
 
     This class is used for the BFS alg,
@@ -108,6 +108,7 @@ Classes:
                 Then removes it. 
             It returns the first node because it is its turn to be considered
                 It removes it as it no longer needs to be in line.
+
 
 
 
@@ -143,6 +144,7 @@ Classes:
 
 
 
+
     Homemade        tb_homemade .cpp / .h
         
         Custom class that essentially works as a vector for coords 
@@ -161,6 +163,8 @@ tb_bfs_alg .cpp / .h
 
 
 
+
+
     bool* path_viability_check(int x1, int z1, int x2, int z2, const int surface_y);
         
         This function returns a bool array of all blocks within the village bounds
@@ -171,6 +175,9 @@ tb_bfs_alg .cpp / .h
             meaning no obstacles obstruct the path.
 
         This C-style array becomes path_map.
+
+
+
 
 
 
@@ -244,6 +251,10 @@ tb_bfs_alg .cpp / .h
         
 
 tb_house_grouping .cpp / .h
+
+
+
+
 
     void quickSortPlots(Plot *cs_plots, int low, int high)
 
@@ -326,6 +337,10 @@ tb_house_grouping .cpp / .h
 
 
 
+
+
+
+
     std::vector<Waypoint> group_plots(Plot *cs_plots, int plot_amount, int x1, int z1,
                                   int x2, int z2, const bool *path_map, 
                                   const int surface_y)
@@ -372,6 +387,9 @@ tb_house_grouping .cpp / .h
             Then return the vector of all waypoints created
 
 
+
+
+
     void connectHouses(int x1, int z1, int x2, int z2, Waypoint wp, bool *path_map, 
                     Plot *cs_plots, int plot_amount, mcpp::BlockType block, 
                     bool debug, const int surface_y)
@@ -411,6 +429,9 @@ tb_house_grouping .cpp / .h
 
 tb_waypoint_gen .cpp / .h
 
+
+
+
     void quickSortWaypoints(std::vector<Waypoint>& waypoints, int low, int high)
             
         Void function that is a quicksory algorithm,
@@ -437,6 +458,9 @@ tb_waypoint_gen .cpp / .h
             Quicksort algorithm that works the exact same as the plot one
                 (quickSortPlots())
             Except .dist is the distance of the waypoint to the centre
+
+
+
 
 
     void connectWaypoints(int x1, int z1, int x2, int z2, 
@@ -478,6 +502,8 @@ tb_waypoint_gen .cpp / .h
 
             
 
+
+
     void waypointPlatforms(const std::vector<Waypoint>& waypoints, 
                         const int surface_y) 
         
@@ -506,6 +532,9 @@ tb_waypoint_gen .cpp / .h
 THINGS YOU MAY WANNA CHANGE 
     and how to do it
 
+
+
+
     OBSTACLE DETECTION
 
         Update path_viability_check(...) of (tb_bfs_alg.cpp) to set more indexes to true
@@ -514,6 +543,9 @@ THINGS YOU MAY WANNA CHANGE
 
         To add more obstacles
             set the index in the array to true when the new obstacle condition is met
+
+
+
 
         
     PATHFINDING ALGORITHM
@@ -527,6 +559,9 @@ THINGS YOU MAY WANNA CHANGE
         To add more avoidance systems, 
             I would reccomended setting the blocks of wtv you tryna avoid
             to be visited 
+
+
+
 
     PLOT GROUPINGS
 
@@ -545,6 +580,9 @@ THINGS YOU MAY WANNA CHANGE
             This would take place on the loop found starting at line 196
             And line 185 (quickSortPlots(...)) would no longer be needed
     
+
+
+
     WAYPOINT RELOCATIONS
 
         Update waypointFits(...) of (tb_house_grouping.cpp),
@@ -558,6 +596,9 @@ THINGS YOU MAY WANNA CHANGE
                 the waypoint's x attribute and z attribute
                 gets finalised at a valid location
 
+
+
+
     WAYPOINT GROUPINGS
         
         Update connectWaypoints(...) of (tb_waypoint_gen)
@@ -568,6 +609,10 @@ THINGS YOU MAY WANNA CHANGE
             in such a way that consectutive waypoints can be ideal for joining
                 this is how quickSortWaypoints(...) works
     
+
+
+
+
     WAYPOINT STRUCTURE
 
         update connectWaypoints(...) of (tb_waypoint_gen.cpp)
